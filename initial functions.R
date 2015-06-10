@@ -1,4 +1,4 @@
-#Functions required
+#Building blocks functions
 
 #1. get results summary of a given team
 get_results<-function(teamid){ 
@@ -17,7 +17,7 @@ get_results<-function(teamid){
   return(rbind(results_wr,results_non_wr))       
 }
 
-#2. get statistics for a given player
+#2. get career history for a given player
 get_player_stats<-function(user_id){
   
   data<-html(paste0('http://www.lastmanstands.com/career-history?userid=',user_id,'#player-stats-content'))%>%
