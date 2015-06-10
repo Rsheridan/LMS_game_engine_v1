@@ -91,6 +91,25 @@ get_top_three_batsmen<-function(teamid){
   return(data)
 }
 
-get_player_stats(get_top_three_batsmen(next_team_ID())[1])
-
+#8. Lookup ID numbers of players
+get_player_id_lookup<-function(){
+  
+  ids<-html("http://www.lastmanstands.com/team-batting-stats?teamid=6746#team-stats-content")%>%
+    html_nodes('#team-stats-content')%>%
+    html_nodes('table,a')%>%
+    html_attr('href')%>%
+    as.vector()%>%
+    gsub(".*userid=","",.)%>%
+    .[!is.na(.)]
+  
+  player_lookup<-html("http://www.lastmanstands.com/team-batting-stats?teamid=6746#team-stats-content")%>%
+    html_nodes('#team-stats-content')%>%
+    html_nodes('table')%>%
+    html_table()%>%
+    .[[1]]%>%
+    select(Player)%>%
+    cbind(.,ids)
+  
+  return(player_lookup)
+}
 
