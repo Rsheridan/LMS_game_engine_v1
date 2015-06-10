@@ -1,3 +1,6 @@
+require(dplyr)
+require(rvest)
+
 #Building blocks functions
 
 #1. get results summary of a given team
@@ -112,4 +115,33 @@ get_player_id_lookup<-function(){
   
   return(player_lookup)
 }
+
+#Now assemble some data sets we will use throughought
+#Player to ID lookup
+player_lookup<-get_player_id_lookup() 
+
+#Combine team bowling and batting statistics
+batting<-team_batting(6746)
+bowling<-team_bowling(6746)
+
+team_batting_bowling<-inner_join(batting,bowling,by='Player')
+names(team_batting_bowling)<-c('player',
+                               'batting_world_ranking',
+                               'batting_innings',
+                               'not_outs',
+                               'total_runs',
+                               'batting_average',
+                               'balls_faced',
+                               'strike_rate',
+                               'fifties',
+                               'bowling_world_ranking',
+                               'bowling_innings',
+                               'overs_bowled',
+                               'runs_conceded',
+                               'wickets',
+                               'best_figures',
+                               'bowling_average',
+                               'economy')
+
+
 
