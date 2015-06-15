@@ -181,4 +181,5 @@ names(team_batting_bowling)<-c('player',
                                'keeping_points')
 
 
-
+#read how-out csv
+how_out<-read.csv('how_out.csv')

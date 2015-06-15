@@ -64,11 +64,11 @@ body <- dashboardBody(
                 box(width=4,title='Select your player',selectInput('player_name','',choices=dropdown_choices,selected=NULL))
             ),
             fluidRow(
-              box(width=6,title='Batting form',showOutput("batting_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>')),
-              box(width=6,title='Bowling form',showOutput("bowling_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>'))
+              box(width=6,title='Batting form','Runs scored, last 10 games',showOutput("batting_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>')),
+              box(width=6,title='Bowling form','Bowling economy, last 10 games',showOutput("bowling_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>'))
             ),
             fluidRow(
-              box(width=6,title='Top dismissal mode','How out bar chart')
+              box(width=6,title='Top dismissal mode','# Dismissals, all career',showOutput("how_out_tbontb","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>'))
             ))
     
     
