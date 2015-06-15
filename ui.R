@@ -5,7 +5,8 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Team", tabName = "team"),
     menuItem("Player", tabName = "player"),
-    menuItem("Next fixture",tabName="next_fixture")
+    menuItem("Next fixture",tabName="next_fixture"),
+    menuItem("MVP",tabName = "mvp")
   )
   
 )
@@ -13,7 +14,13 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   tabItems(
-    tabItem(tabName = "team",h2("Scatter plot"),
+    tabItem(tabName = "team",
+            fluidRow(
+              box(width=4,title="How to use","This is the Two Bats Or Not To Bat 'Game Engine'. Use it to keep track of team statistics, your own game, the current MVP standings, and info about our next opponent. 
+                  Feedback welcome", a('here',href="mailto:robbies121@gmail.com?body=My suggestion is...&subject=Game enging suggestion box")),
+              box(width=4,title="Last Fixture","last fixture details here- Best bowler, top scorer"),
+              box(width=4,title="Team statistics","Total wickets, total runs scored, total runs conceded, total games played, win %")
+            ),
             fluidRow(
               box(width=8,title="Player comparison",showOutput("scatter","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>')),
               box(width=4,title="",
@@ -48,7 +55,23 @@ body <- dashboardBody(
                                     
               )
             )
-    )
+    ),
+    
+    tabItem(tabName = "player",
+            fluidRow(
+                box(width=8,title='Guide','This page helps you analyze your game, and that of your teammates. Use the selection to choose your player, and then
+                     see their batting form, bowling form, and top dismissals. Also see their summary career statistics'),
+                box(width=4,title='Select your player',selectInput('player_name','',choices=dropdown_choices,selected=NULL))
+            ),
+            fluidRow(
+              box(width=6,title='Batting form',showOutput("batting_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>')),
+              box(width=6,title='Bowling form',showOutput("bowling_time","highcharts"),HTML('<style>.rChart {width: 100%; height: 100%}</style>'))
+            ),
+            fluidRow(
+              box(width=6,title='Top dismissal mode','How out bar chart')
+            ))
+    
+    
   )
 )
 

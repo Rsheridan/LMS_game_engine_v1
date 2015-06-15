@@ -82,7 +82,7 @@ return(data)
 }
 
 #7. Get top three bowlers from a team page
-get_top_three_batsmen<-function(teamid){
+get_top_three_bowlers<-function(teamid){
   
   data<-html(paste0('http://www.lastmanstands.com/team-results?teamid=',teamid,'#team-stats-content'))%>%
     html_node('#team-top-stats-mid')%>%
@@ -116,15 +116,49 @@ get_player_id_lookup<-function(){
   return(player_lookup)
 }
 
+
+#8. Lookup MVP table
+batting_mvp<-html("http://www.lastmanstands.com/league-batting&leagueid=128&seasonid=62&divisionid=0")%>%
+  html_nodes('#content-page-main-content-mid')%>%
+  html_nodes('table')%>%
+  html_table()%>%
+  .[[1]]
+names(batting_mvp)<-c('ranking','player','team','batting_points')
+batting_mvp<-filter(batting_mvp,team=='Two Bats Or Not To Bat')
+
+bowling_mvp<-html("http://www.lastmanstands.com/league-bowling&leagueid=128&seasonid=62&divisionid=0")%>%
+  html_nodes('#content-page-main-content-mid')%>%
+  html_nodes('table')%>%
+  html_table()%>%
+  .[[1]]
+names(bowling_mvp)<-c('ranking','player','team','bowling_points')
+bowling_mvp<-filter(bowling_mvp,team=='Two Bats Or Not To Bat')
+
+keeping_mvp<-html("http://www.lastmanstands.com/league-keeping&leagueid=128&seasonid=62&divisionid=0")%>%
+  html_nodes('#content-page-main-content-mid')%>%
+  html_nodes('table')%>%
+  html_table()%>%
+  .[[1]]
+names(keeping_mvp)<-c('ranking','player','team','keeping_points')
+keeping_mvp<-filter(keeping_mvp,team=='Two Bats Or Not To Bat')
+
+mvp<-left_join(bowling_mvp,batting_mvp,by='player')%>%
+  left_join(keeping_mvp,by='player')%>%
+  select(player,batting_points,bowling_points,keeping_points)
+
 #Now assemble some data sets we will use throughought
 #Player to ID lookup
-player_lookup<-get_player_id_lookup() 
+player_lookup<-get_player_id_lookup()
+dropdown_choices<-setNames(player_lookup$Player,player_lookup$Player)
+
 
 #Combine team bowling and batting statistics
 batting<-team_batting(6746)
 bowling<-team_bowling(6746)
 
-team_batting_bowling<-inner_join(batting,bowling,by='Player')
+team_batting_bowling<-inner_join(batting,bowling,by='Player')%>%
+  left_join(mvp,by=c('Player'='player'))
+
 names(team_batting_bowling)<-c('player',
                                'batting_world_ranking',
                                'batting_innings',
@@ -141,7 +175,10 @@ names(team_batting_bowling)<-c('player',
                                'wickets',
                                'best_figures',
                                'bowling_average',
-                               'economy')
+                               'economy',
+                               'batting_points',
+                               'bowling_points',
+                               'keeping_points')
 
 
 
