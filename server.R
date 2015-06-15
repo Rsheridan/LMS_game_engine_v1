@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
     
     plot <- rCharts:::Highcharts$new()
     plot$chart(type="scatter")
-    plot$series(data = toJSONArray2(to_plot,json=F),name="Players",color='rgba(26, 152, 5, 0.5)')
+    plot$series(data = toJSONArray2(to_plot,json=F),name="Players",color='rgba(51, 51, 51, 0.5)')
     plot$tooltip(useHTML = T, formatter = "#! function() { return this.point.player; } !#")
     plot$plotOptions(
       scatter = list(
@@ -40,13 +40,25 @@ shinyServer(function(input, output) {
     data<-get_player_stats(id)%>%
       mutate(date=dmy(Date))%>%
       mutate(order=min_rank(date))%>%
-      select(x=order,y=RS)%>%
+      mutate(label=paste0(date,', ',Opposition))%>%
+      select(x=order,y=RS,label)%>%
       top_n(10,x)
   
     
     plot <- rCharts:::Highcharts$new()
     plot$chart(type="line")
-    plot$series(data = toJSONArray2(data,json=F),name="Runs scored - Last 10 games",color='rgba(26, 152, 5, 0.5)')
+    plot$series(data = toJSONArray2(data,json=F),name="Runs scored",color='rgba(51, 51, 51, 1)')
+    plot$yAxis(title="{text: 'Bowling economy'}", gridLineColor="#FFFFFF", floor=0)
+    plot$xAxis(gridLineColor="#FFFFFF",lineColor="#FFFFFF",tickColor="#FFFFFF",labels=list(enabled=F))
+    plot$plotOptions(
+      line = list(
+        lineWidth=3,
+        marker=list(
+          symbol="circle",
+          radius= 2,
+          color='rgba(51, 51, 51, 1)'))
+    )
+    
     
     plot
   })
@@ -61,13 +73,23 @@ shinyServer(function(input, output) {
       mutate(date=dmy(Date))%>%
       mutate(order=min_rank(date))%>%
       mutate(y=RC/OB)%>%
-      select(x=order,y)%>%
+      mutate(label=paste0(date,', ',Opposition))%>%
+      select(x=order,y,label)%>%
       top_n(10,x)
     
     plot <- rCharts:::Highcharts$new()
     plot$chart(type="line")
-    plot$series(data = toJSONArray2(data,json=F),name="Bowling economy - Last 10 games",color='rgba(26, 152, 5, 0.5)')
-    
+    plot$series(data = toJSONArray2(data,json=F),name="Bowling economy",color='rgba(51, 51, 51, 1)')
+    plot$yAxis(title="{text: 'Bowling economy'}", gridLineColor="#FFFFFF", floor=0)
+    plot$xAxis(gridLineColor="#FFFFFF",lineColor="#FFFFFF",tickColor="#FFFFFF",labels=list(enabled=F))
+    plot$plotOptions(
+      line = list(
+        lineWidth=3,
+        marker=list(
+          symbol="circle",
+          radius= 2,
+          color='rgba(51, 51, 51, 1)'))
+    )
     plot
   })
   
